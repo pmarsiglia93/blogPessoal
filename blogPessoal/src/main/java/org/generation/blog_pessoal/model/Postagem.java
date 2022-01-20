@@ -19,8 +19,8 @@ import javax.validation.constraints.Size;
 
 public class Postagem {
 	
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Id // o id é auto incremento
+	@GeneratedValue(strategy = GenerationType.IDENTITY) //auto incremento
 	private long id;
 	
 	@NotNull
@@ -32,7 +32,7 @@ public class Postagem {
 	private String texto;
 	
 	@Temporal(TemporalType.TIMESTAMP)
-	private Date date = new java.sql.Date(System.currentTimeMillis());
+	private Date date = new java.sql.Date(System.currentTimeMillis()); //preenchendo automático
 
 	public long getId() {
 		return id;
