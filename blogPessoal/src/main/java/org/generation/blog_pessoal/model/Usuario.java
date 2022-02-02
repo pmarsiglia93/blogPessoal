@@ -42,8 +42,7 @@ public class Usuario {
 
 	//Segundo Método Construtor - Sem os atributos
 	
-	public Usuario() {
-	}
+	public Usuario() {}
 
 	//------------------------------------------------
 	public long getId() {

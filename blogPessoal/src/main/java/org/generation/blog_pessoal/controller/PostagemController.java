@@ -45,18 +45,18 @@ public class PostagemController {
 		return ResponseEntity.ok(repository.findAllByTituloContainingIgnoreCase(titulo)); // endPoint com a função de trazer uma postagem.
 	} //end-point para GET sub rota para evitar duplicidade, utilizamos o metodo dentro do repository para trazer todos os valores.
 	
-	@PostMapping // postPostagem --> endPoint com função de gravar uma nova postagem no banco de dados.
+	@PostMapping("/post") // postPostagem --> endPoint com função de gravar uma nova postagem no banco de dados.
 	public ResponseEntity<Postagem> post (@RequestBody Postagem postagem){
 		return ResponseEntity.status(HttpStatus.CREATED).body(repository.save(postagem));
 	}
 	
-	@PutMapping // putPostagem --> endPoint com função de atualizar os dados da postagem.
+	@PutMapping("/edit") // putPostagem --> endPoint com função de atualizar os dados da postagem.
 	public ResponseEntity<Postagem> put (@RequestBody Postagem postagem){
 		return ResponseEntity.status(HttpStatus.OK).body(repository.save(postagem));
 		
 	}
 	
-	@DeleteMapping("/{id}") // deletePostagem --> endPoint com a função de apagar uma postagem do banco de dados.
+	@DeleteMapping("/delete/{id}") // deletePostagem --> endPoint com a função de apagar uma postagem do banco de dados.
 	public void delete(@PathVariable long id) {
 		repository.deleteById(id);
 	}		

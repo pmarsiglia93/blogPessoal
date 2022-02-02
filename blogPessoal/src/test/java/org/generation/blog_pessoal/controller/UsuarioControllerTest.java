@@ -2,10 +2,11 @@ package org.generation.blog_pessoal.controller;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import java.util.Optional;
+import java.util.List;
 
 import org.generation.blog_pessoal.model.Usuario;
 import org.generation.blog_pessoal.service.UsuarioService;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
@@ -27,6 +28,7 @@ import org.springframework.http.ResponseEntity;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class UsuarioControllerTest {
 	
+	// Injeta um objeto de classe TestRestTemplate, responsável por fazer requisição HTTP (semelhante ao Postman)
 	@Autowired
 	private TestRestTemplate testRestTemplate;
 	
@@ -37,14 +39,19 @@ public class UsuarioControllerTest {
 	
 	@Test
 	@Order(1)
+	@Disabled
 	@DisplayName("Cadastrar Um Usuário")
 	public void deveCriarUmUsuario() {
 		
+		//Cria um objeto da Classe Usuario e insere dentro de um Objeto da Classe HttpEntity (Entidade HTTP)
 		HttpEntity<Usuario> requisicao = new HttpEntity<Usuario>(new Usuario(0L, "Paulo Antunes", "paulo_antunes@email.com.br", "13465278"));
-		
+				
+		//Cria um Objeto da Classe ResponseEntity (resposta), que receberá a Resposta da Requisição que será enviada pelo Objeto da Classe TestRestTemplate.		 
+		//Na requisição HTTP será enviada a URL do recurso (/usuarios/cadastrar), o verbo (POST), a entidade HTTP criada acima (requisicao) e a Classe de retornos da Resposta (Usuario).		
 		ResponseEntity<Usuario> resposta = testRestTemplate
 				.exchange("/usuarios/cadastrar", HttpMethod.POST, requisicao, Usuario.class);
 		
+		//Verifica se a requisição retornou o Status Code CREATED (201), Se for verdadeira, o teste passa, se não, o teste falha.
 		assertEquals(HttpStatus.CREATED, resposta.getStatusCode());
 		assertEquals(requisicao.getBody().getNome(), resposta.getBody().getNome());
 		assertEquals(requisicao.getBody().getUsuario(), resposta.getBody().getUsuario());
@@ -54,40 +61,46 @@ public class UsuarioControllerTest {
 	
 	@Test
 	@Order(2)
+	@Disabled
 	@DisplayName("Não deve permitir duplicação do Usuário")
 	public void naoDeveDuplicarUsuario() {
 		
-		usuarioService.cadastrarUsuario(new Usuario(0L, "Maria da Silva", "maria_silva@email.com.br", "13465278"));
+		usuarioService.cadastrarUsuario(new Usuario(0L, 
+				"Maria da Silva", "maria_silva@email.com.br", "13465278"));
 		
-		HttpEntity<Usuario> requisicao = new HttpEntity<Usuario>(new Usuario(0L, "Maria da Silva", "maria_silva@email.com", "13465278"));
-			
+		
+		HttpEntity<Usuario> requisicao = new HttpEntity<Usuario>(new Usuario(0L, 
+				"Maria da Silva", "maria_silva@email.com.br", "13465278"));
+		
+						
 		ResponseEntity<Usuario> resposta = testRestTemplate
 				.exchange("/usuarios/cadastrar", HttpMethod.POST, requisicao, Usuario.class);		
 		
-		assertEquals(HttpStatus.BAD_REQUEST, resposta.getStatusCode());
+		assertEquals(HttpStatus.UNAUTHORIZED, resposta.getStatusCode());
 	}
 	
 	//Método 03 - Alterar um usuário
 	
 	@Test
 	@Order(3)
+	@Disabled
 	@DisplayName("Alterar um Usuário")
 	public void deveAtualizarUmUsuario(){
 		
-		Optional<Usuario> usuarioCreate = usuarioService.cadastrarUsuario(new Usuario(0L, "Juliana Andrews", "juliana_andrews@email.com.br", "juliana123"));
+		ResponseEntity<Usuario> usuarioCadastrado = usuarioService.cadastrarUsuario(new Usuario(0L, "Juliana Andrews", "juliana_andrews@email.com.br", "juliana123"));
 		
-		Usuario usuarioUpdate = new Usuario(usuarioCreate.get().getId(),
-				"Juliana Andrews Ramos", "juliana_ramos@email.com.br", "juliana123");
+		Usuario usuarioUpdate = new Usuario(usuarioCadastrado.getBody().getId(),
+				"Juliana Andrews Ramos", "juliana_andrews@email.com.br", "juliana123");
 		
 		HttpEntity<Usuario> requisicao = new HttpEntity<Usuario>(usuarioUpdate);
 		
 		ResponseEntity<Usuario> resposta = testRestTemplate
-				.withBasicAuth("root", "root")
-				.exchange("/usuarios/atualizar", HttpMethod.PUT, requisicao, Usuario.class);
+				.withBasicAuth("juliana_andrews@email.com.br", "juliana123")
+				.exchange("/usuarios/edit", HttpMethod.PUT, requisicao, Usuario.class);
 		
 		assertEquals(HttpStatus.OK, resposta.getStatusCode());
-		assertEquals(usuarioUpdate.getNome(), resposta.getBody().getNome());
-		assertEquals(usuarioUpdate.getUsuario(), resposta.getBody().getUsuario());
+		assertEquals(requisicao.getBody().getNome(), resposta.getBody().getNome()); 
+		
 	}
 	
 	@Test
@@ -99,11 +112,13 @@ public class UsuarioControllerTest {
 		
 		usuarioService.cadastrarUsuario(new Usuario(0L, "Ricardo Marques", "ricardo_marques@email.com.br", "ricardo123"));
 		
-		ResponseEntity<String> resposta = testRestTemplate
-				.withBasicAuth("sa", "sa")
-				.exchange("/usuarios/all", HttpMethod.GET, null, String.class);
+		@SuppressWarnings("rawtypes")
+		ResponseEntity<List> resposta = testRestTemplate
+				.withBasicAuth("sabrina_sanches@email.com.br", "sabrina123")
+				.exchange("/usuarios/all", HttpMethod.GET, null, List.class);
 		
 		assertEquals(HttpStatus.OK, resposta.getStatusCode());
+		assertEquals(2, resposta.getBody().size());
 		
 	}
 

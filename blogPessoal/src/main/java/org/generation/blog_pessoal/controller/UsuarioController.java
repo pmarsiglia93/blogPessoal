@@ -38,11 +38,18 @@ public class UsuarioController {
 				.orElse(ResponseEntity.status(HttpStatus.UNAUTHORIZED).build());
 	}
 	
-	@PostMapping("/cadastrar")
+	/*@PostMapping("/cadastrar")
 	public ResponseEntity<Usuario> Post(@RequestBody Usuario usuario){
-		return ResponseEntity.status(HttpStatus.CREATED)
-				.body(usuarioService.cadastrarUsuario(usuario));
+		return usuarioService.cadastrarUsuario(usuario).map(resp -> ResponseEntity.status(HttpStatus.CREATED).body(resp))
+		.orElse(ResponseEntity.status(HttpStatus.BAD_REQUEST).build());
 	}
+	*/
+			
+	@PostMapping("/cadastrar")
+    public ResponseEntity<Usuario> Post(@RequestBody Usuario usuario){
+        return usuarioService.cadastrarUsuario(usuario);
+    }
+
 	
 	@GetMapping("/all")
 	public ResponseEntity<List<Usuario>> findAllUsuario(){
@@ -55,10 +62,10 @@ public class UsuarioController {
 	}
 	
 	@GetMapping("/{id}")
-	public ResponseEntity<Usuario> findUserById(@PathVariable long id) {
+	public ResponseEntity<Usuario> findById(@PathVariable long id) {
 		return repository.findById(id)
-				.map(response -> ResponseEntity.status(HttpStatus.OK).body(response))
-				.orElse(ResponseEntity.status(HttpStatus.NO_CONTENT).build());
+				.map(resposta -> ResponseEntity.ok(resposta))
+				.orElse(ResponseEntity.notFound().build());
 	}
 	
 	@PostMapping("/save")
