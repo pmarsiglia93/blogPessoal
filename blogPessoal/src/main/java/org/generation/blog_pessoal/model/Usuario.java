@@ -27,7 +27,25 @@ public class Usuario {
 	@NotNull
 	@Size(min = 5, max = 100)
 	private String senha;
+	
+	//------------------------------------------------
+	// Passo 01 - Criar os Métodos Construtores na Classe Usuario(Camada Model)
+	
+	//Primeiro Método Construtor - Com os atributos
+	
+	public Usuario(long id, String nome, String usuario, String senha) {
+		this.id = id;
+		this.nome = nome;
+		this.usuario = usuario;
+		this.senha = senha;
+	}
 
+	//Segundo Método Construtor - Sem os atributos
+	
+	public Usuario() {
+	}
+
+	//------------------------------------------------
 	public long getId() {
 		return id;
 	}
