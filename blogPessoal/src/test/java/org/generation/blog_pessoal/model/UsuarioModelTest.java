@@ -27,7 +27,7 @@ public Usuario usuario;
 	
 	@BeforeEach
 	public void start() {
-		usuario = new Usuario(0L, "BruTech", "Bruno Tester", "123456789");
+		usuario = new Usuario(0L, "PauloTech", "Paulo Tester", "123456789");
 	}
 
 	@Test
@@ -40,11 +40,10 @@ public Usuario usuario;
 	@Test
 	void testValidaAtributosNulos() {
 		Usuario usuarioErro = new Usuario();
-		usuarioErro.setUsuario("Isobel");
+		usuarioErro.setUsuario("Gusobel");
 		Set<ConstraintViolation<Usuario>> error = validator.validate(usuarioErro);
 		System.out.println(error.toString());
 		assertFalse(error.isEmpty());
 	}
-
 
 }
