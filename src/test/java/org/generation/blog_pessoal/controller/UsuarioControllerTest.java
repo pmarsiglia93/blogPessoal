@@ -65,13 +65,9 @@ public class UsuarioControllerTest {
 	@DisplayName("Não deve permitir duplicação do Usuário")
 	public void naoDeveDuplicarUsuario() {
 		
-		usuarioService.cadastrarUsuario(new Usuario(0L, 
-				"Maria da Silva", "maria_silva@email.com.br", "13465278"));
+		usuarioService.cadastrarUsuario(new Usuario(0L,"Maria da Silva", "maria_silva@email.com.br", "13465278"));		
 		
-		
-		HttpEntity<Usuario> requisicao = new HttpEntity<Usuario>(new Usuario(0L, 
-				"Maria da Silva", "maria_silva@email.com.br", "13465278"));
-		
+		HttpEntity<Usuario> requisicao = new HttpEntity<Usuario>(new Usuario(0L,"Maria da Silva", "maria_silva@email.com.br", "13465278"));		
 						
 		ResponseEntity<Usuario> resposta = testRestTemplate
 				.exchange("/usuarios/cadastrar", HttpMethod.POST, requisicao, Usuario.class);		
@@ -89,8 +85,7 @@ public class UsuarioControllerTest {
 		
 		ResponseEntity<Usuario> usuarioCadastrado = usuarioService.cadastrarUsuario(new Usuario(0L, "Juliana Andrews", "juliana_andrews@email.com.br", "juliana123"));
 		
-		Usuario usuarioUpdate = new Usuario(usuarioCadastrado.getBody().getId(),
-				"Juliana Andrews Ramos", "juliana_andrews@email.com.br", "juliana123");
+		Usuario usuarioUpdate = new Usuario(usuarioCadastrado.getBody().getId(),"Juliana Andrews Ramos", "juliana_andrews@email.com.br", "juliana123");
 		
 		HttpEntity<Usuario> requisicao = new HttpEntity<Usuario>(usuarioUpdate);
 		
